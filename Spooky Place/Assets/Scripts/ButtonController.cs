@@ -7,8 +7,7 @@ public class ButtonController : MonoBehaviour
 
     public bool doorOpen = false;
 
-    private string openAnimationName = "DoorOpens";
-    private string openAnimationName1 = "Door1Opens";
+    public string openAnimationName = "DoorOpens";
 
 
     public void PlayAnimation()
@@ -27,18 +26,6 @@ public class ButtonController : MonoBehaviour
             }
         }
 
-        if (!doorOpen)
-        {
-            doorAnim.Play(openAnimationName1, 0, 0.0f);
-            doorOpen = true;
-        }
-        else
-        {
-            if (!doorOpen)
-            {
-                doorOpen = false;
-            }
-        }
     }
 
 }
