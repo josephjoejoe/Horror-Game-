@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 public class InteractableRaycast : MonoBehaviour
 {
+    [Range(0f, 100f)]
+    public float batteryLevel = 100f; 
+    public float batteryDrainRate = 10f; 
+
     private float raylength = 5;
 
     private ButtonController raycastObject;
 
     private KeyCode openDoorKey = KeyCode.Mouse0;
     private KeyCode CollectKey = KeyCode.E;
+    private KeyCode UseFlashlight = KeyCode.F;
 
     public Image crosshair;
 
@@ -20,10 +25,16 @@ public class InteractableRaycast : MonoBehaviour
 
     public bool hasBattery;
     public bool hasFlashlight;
+    public bool flashlightOn;
     public GameObject battery;
     public GameObject Flashlight;
     public GameObject playerFlashlight;
 
+    void Start()
+    {
+        if (playerFlashlight != null)
+            playerFlashlight.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -50,7 +61,8 @@ public class InteractableRaycast : MonoBehaviour
                 if (Input.GetKeyDown(CollectKey))
                 {
                     hasBattery = true;
-                    Destroy(battery);
+                    batteryLevel = 100f;
+                    Destroy(hit.collider.gameObject);
                 }
 
                 CrosshairChange(true);
@@ -62,7 +74,6 @@ public class InteractableRaycast : MonoBehaviour
                 {
                     hasFlashlight = true;
                     Destroy(Flashlight);
-                    // add time for how long the hasbattery bool will stay true
                 }
 
                 CrosshairChange(true);
@@ -74,13 +85,32 @@ public class InteractableRaycast : MonoBehaviour
              CrosshairChange(false);           
         }
 
-        if(hasBattery == true && hasFlashlight == true)
+        if(hasBattery == true && hasFlashlight == true && batteryLevel > 0f)
         {
-            playerFlashlight.SetActive(true);
+            if (Input.GetKeyDown(UseFlashlight))
+            {
+                flashlightOn = !flashlightOn; 
+                playerFlashlight.SetActive(flashlightOn);
+            }
+        }
+
+        // Drain battery if flashlight is on
+        if (flashlightOn && hasBattery)
+        {
+            batteryLevel -= batteryDrainRate * Time.deltaTime;
+
+            // If battery runs out
+            if (batteryLevel <= 0f)
+            {
+                batteryLevel = 0f;
+                flashlightOn = false;
+                playerFlashlight.SetActive(false);
+                hasBattery = false; // You could also leave this true and just check batteryLevel
+            }
         }
 
     }
-    
+
 
     void CrosshairChange(bool on)
     {
