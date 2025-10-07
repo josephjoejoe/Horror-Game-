@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - DoorLever
+  - Battery
+  - Flashlight
   layers:
   - Default
   - TransparentFX

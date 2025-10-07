@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,11 +10,19 @@ public class InteractableRaycast : MonoBehaviour
     private ButtonController raycastObject;
 
     private KeyCode openDoorKey = KeyCode.Mouse0;
+    private KeyCode CollectKey = KeyCode.E;
 
     public Image crosshair;
 
     private const string interactableTag = "DoorLever";
+    private const string interactableTag1 = "Battery";
+    private const string interactableTag2 = "Flashlight";
 
+    public bool hasBattery;
+    public bool hasFlashlight;
+    public GameObject battery;
+    public GameObject Flashlight;
+    public GameObject playerFlashlight;
 
 
     // Update is called once per frame
@@ -35,12 +44,43 @@ public class InteractableRaycast : MonoBehaviour
                     raycastObject.PlayAnimation();
                 }
             }
+
+            if (hit.collider.CompareTag(interactableTag1))
+            {
+                if (Input.GetKeyDown(CollectKey))
+                {
+                    hasBattery = true;
+                    Destroy(battery);
+                }
+
+                CrosshairChange(true);
+            }
+
+            if(hit.collider.CompareTag(interactableTag2))
+            {
+                if (Input.GetKeyDown(CollectKey))
+                {
+                    hasFlashlight = true;
+                    Destroy(Flashlight);
+                    // add time for how long the hasbattery bool will stay true
+                }
+
+                CrosshairChange(true);
+            }
+
         }
         else
         {   
              CrosshairChange(false);           
         }
+
+        if(hasBattery == true && hasFlashlight == true)
+        {
+            playerFlashlight.SetActive(true);
+        }
+
     }
+    
 
     void CrosshairChange(bool on)
     {
